@@ -1,0 +1,25 @@
+import pandas as pd
+from textblob import TextBlob
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+df = pd.read_csv("amazon_reviews.csv")
+print(df)
+def classify_sentiment(text):
+    polarity = TextBlob(text).sentiment.polarity
+    
+    if polarity > 0:
+        return "Positive"
+    elif polarity < 0:
+        return "Negative"
+    else:
+        return "Neutral"
+
+df["Sentiment"] = df["review"].apply(classify_sentiment)
+print(df)
+analyzer = SentimentIntensityAnalyzer()
+
+def emotion_score(text):
+    return analyzer.polarity_scores(text)["compound"]
+
+df["Emotion_Score"] = df["review"].apply(emotion_score)
+print(df)
+print(df["Sentiment"].value_counts())
